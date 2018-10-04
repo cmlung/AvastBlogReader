@@ -91,9 +91,9 @@ public class MainActivity extends AppCompatActivity {
         protected Exception doInBackground(Integer... params) {
 
             String avast_rss = "https://blog.avast.com/rss.xml";
-            Boolean a = false;
-            Boolean b = false;
-            Boolean c = false;
+            //Boolean a = false;
+            //Boolean b = false;
+            //Boolean c = false;
 
             try
             {
@@ -104,10 +104,10 @@ public class MainActivity extends AppCompatActivity {
                 xmlparser.setInput(getInputStream(url),"UTF_8");
 
                 boolean insideItem = false; // indicate when the parser get into <item> block
-                int count = 0;
+                int count = 1;
                 int eventType = xmlparser.getEventType(); // indicate where the xmlparser is
 
-                while (eventType != XmlPullParser.END_DOCUMENT)
+                while (eventType != XmlPullParser.END_DOCUMENT && count < 6 )
                 {
                     if (eventType == XmlPullParser.START_TAG)
                     {
@@ -118,21 +118,20 @@ public class MainActivity extends AppCompatActivity {
                         else if (xmlparser.getName().equalsIgnoreCase("title") && insideItem)
                         {
                             //titles.add(xmlparser.nextText());
-                            title = count+"---"+xmlparser.nextText()+"\n\n"; //test
-                            count++;
-                            a=true;
+                            title = count+". "+xmlparser.nextText()+"\n\n"; //test
+                            // a=true; // for debug
                         }
                         else if (xmlparser.getName().equalsIgnoreCase("link") && insideItem)
                         {
                             //links.add(xmlparser.nextText());
                             link = xmlparser.nextText()+"\n\n"; //test
-                            b=true;
+                            // b=true; // for debug
                         }
                         else if (xmlparser.getName().equalsIgnoreCase("description") && insideItem)
                         {
                             //descriptions.add(xmlparser.nextText());
-                            description = xmlparser.nextText(); //test
-                            c=true;
+                            description = xmlparser.nextText()+"\n"; //test
+                            // c=true; // for debug
                         }
 
                     }
@@ -140,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
                     {
                         items.add(title+link+description); // test
                         insideItem = false; // parser leave item block
+                        count++;
                     }
 
                     eventType = xmlparser.next();
