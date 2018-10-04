@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                if (links.size() != 0) {
+                if (links.size() > 0) {
                     System.out.println("Link is not null && onItemClock start - for debug");
                     Uri uri = Uri.parse(links.get(position));
                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
@@ -61,19 +61,15 @@ public class MainActivity extends AppCompatActivity {
         new BGTask().execute();
     }
 
-    public InputStream getInputStream(URL url)
-    {
-        try{
+    public InputStream getInputStream(URL url) {
+        try {
             return url.openConnection().getInputStream();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             return null;
         }
     }
 
-    public class BGTask extends AsyncTask<Integer, Void, Exception>
-    {
+    public class BGTask extends AsyncTask<Integer, Void, Exception> {
 
         ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
 
@@ -95,49 +91,37 @@ public class MainActivity extends AppCompatActivity {
             //Boolean b = false;
             //Boolean c = false;
 
-            try
-            {
+            try {
                 URL url = new URL(avast_rss);
                 XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
                 factory.setNamespaceAware(false);
                 XmlPullParser xmlparser = factory.newPullParser();
-                xmlparser.setInput(getInputStream(url),"UTF_8");
+                xmlparser.setInput(getInputStream(url), "UTF_8");
 
                 boolean insideItem = false; // indicate when the parser get into <item> block
                 int count = 1;
                 int eventType = xmlparser.getEventType(); // indicate where the xmlparser is
 
-                while (eventType != XmlPullParser.END_DOCUMENT && count < 6 )
-                {
-                    if (eventType == XmlPullParser.START_TAG)
-                    {
-                        if (xmlparser.getName().equalsIgnoreCase("item"))
-                        {
-                           insideItem = true; // parser now is inside the item tag
-                        }
-                        else if (xmlparser.getName().equalsIgnoreCase("title") && insideItem)
-                        {
+                while (eventType != XmlPullParser.END_DOCUMENT && count < 6) {
+                    if (eventType == XmlPullParser.START_TAG) {
+                        if (xmlparser.getName().equalsIgnoreCase("item")) {
+                            insideItem = true; // parser now is inside the item tag
+                        } else if (xmlparser.getName().equalsIgnoreCase("title") && insideItem) {
                             //titles.add(xmlparser.nextText());
-                            title = count+". "+xmlparser.nextText()+"\n\n"; //test
+                            title = count + ". " + xmlparser.nextText() + "\n\n"; //test
                             // a=true; // for debug
-                        }
-                        else if (xmlparser.getName().equalsIgnoreCase("link") && insideItem)
-                        {
+                        } else if (xmlparser.getName().equalsIgnoreCase("link") && insideItem) {
                             //links.add(xmlparser.nextText());
-                            link = xmlparser.nextText()+"\n\n"; //test
+                            link = xmlparser.nextText() + "\n\n"; //test
                             // b=true; // for debug
-                        }
-                        else if (xmlparser.getName().equalsIgnoreCase("description") && insideItem)
-                        {
+                        } else if (xmlparser.getName().equalsIgnoreCase("description") && insideItem) {
                             //descriptions.add(xmlparser.nextText());
-                            description = xmlparser.nextText()+"\n"; //test
+                            description = xmlparser.nextText() + "\n"; //test
                             // c=true; // for debug
                         }
 
-                    }
-                    else if (eventType == XmlPullParser.END_TAG && xmlparser.getName().equalsIgnoreCase("item"))
-                    {
-                        items.add(title+link+description); // test
+                    } else if (eventType == XmlPullParser.END_TAG && xmlparser.getName().equalsIgnoreCase("item")) {
+                        items.add(title + link + description); // test
                         insideItem = false; // parser leave item block
                         count++;
                     }
@@ -145,17 +129,11 @@ public class MainActivity extends AppCompatActivity {
                     eventType = xmlparser.next();
                 }
 
-            }
-            catch(MalformedURLException e)
-            {
+            } catch (MalformedURLException e) {
                 exception = e;
-            }
-            catch(XmlPullParserException e)
-            {
+            } catch (XmlPullParserException e) {
                 exception = e;
-            }
-            catch(IOException e)
-            {
+            } catch (IOException e) {
                 exception = e;
             }
 
@@ -166,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Exception s) {
             super.onPostExecute(s);
 
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1,items);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, items);
             RSS.setAdapter(adapter);
 
             progressDialog.dismiss();
