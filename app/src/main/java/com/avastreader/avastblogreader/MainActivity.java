@@ -69,6 +69,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public static String stripHtml(String content) {
+        // <p>段落替換為換行
+        content = content.replaceAll("<p .*?>", "\r\n");
+        // <br><br/>替換為換行
+        content = content.replaceAll("<br\\s*/?>", "\r\n");
+        // 去掉其它的<>之間的東西
+        content = content.replaceAll("\\<.*?>", "");
+        return content;
+    }
+
+
     public class BGTask extends AsyncTask<Integer, Void, Exception> {
 
         ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
@@ -116,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                             // b=true; // for debug
                         } else if (xmlparser.getName().equalsIgnoreCase("description") && insideItem) {
                             //descriptions.add(xmlparser.nextText());
-                            description = xmlparser.nextText() + "\n"; //test
+                            description = stripHtml(xmlparser.nextText()) + "\n"; //test
                             // c=true; // for debug
                         }
 
