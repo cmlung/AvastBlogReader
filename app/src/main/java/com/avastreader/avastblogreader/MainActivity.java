@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import android.util.Log;
 
 public class MainActivity extends AppCompatActivity {
     ListView RSS;
@@ -48,9 +49,8 @@ public class MainActivity extends AppCompatActivity {
         RSS.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 if (links.size() > 0) {
-                    System.out.println("Link is not null && onItemClock start - for debug");
+                    Log.v("test","Link is not null && onItemClock start - for debug");
                     Uri uri = Uri.parse(links.get(position));
                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                     startActivity(intent);
@@ -123,7 +123,10 @@ public class MainActivity extends AppCompatActivity {
                             // a=true; // for debug
                         } else if (xmlparser.getName().equalsIgnoreCase("link") && insideItem) {
                             //links.add(xmlparser.nextText());
-                            link = xmlparser.nextText() + "\n\n"; //test
+                            //link = xmlparser.nextText() + "\n\n"; //test
+                             link = xmlparser.nextText();
+                             links.add(link);
+                             link = link + "\n\n";
                             // b=true; // for debug
                         } else if (xmlparser.getName().equalsIgnoreCase("description") && insideItem) {
                             //descriptions.add(xmlparser.nextText());
